@@ -34,12 +34,18 @@ struct Orb {
         )
         anchor.move(to: targetTransform, relativeTo: nil, duration: 0.2)
     }
+    
+    /// Removes this orb from the scene
+    func kill() {
+        anchor.removeFromParent()
+    }
 }
 
 struct Cluster {
-    let spheres: [Orb]
-    
+    var spheres: [Orb]
+    @State var chord: SpatialChord
     init(x: Float, z: Float, spatialChord: SpatialChord) {
+        chord = spatialChord
         spheres = spatialChord.notes.map { note in
             let offset: ClosedRange<Float> = -0.05...0.05
             let xOffset = Float.random(in: offset)
@@ -51,6 +57,40 @@ struct Cluster {
             )
             return Orb(spherePosition)
         }
+    }
+    mutating func updateChord(_ spatialChord: SpatialChord) {
+        // Map existing spheres to the new chord notes, minimising vertical travel
+        // Sort current spheres and target note Y‑positions
+        let sortedSpheres = spheres.sorted { $0.anchor.position.y < $1.anchor.position.y }
+        let sortedTargetY = spatialChord.notes.map(\.yPosition).sorted()
+        
+        // Move each sphere to the closest target note it is paired with
+        let count = min(sortedSpheres.count, sortedTargetY.count)
+        for i in 0..<count {
+            let sphere = sortedSpheres[i]
+            let currentPos = sphere.anchor.position
+            let newPos = SIMD3<Float>(
+                x: currentPos.x,
+                y: sortedTargetY[i],
+                z: currentPos.z
+            )
+            sphere.move(newPos)
+        }
+        
+        // Remove extra spheres if the new chord has fewer notes
+        if sortedTargetY.count < sortedSpheres.count {
+            for i in sortedTargetY.count..<sortedSpheres.count {
+                let sphereToKill = sortedSpheres[i]
+                sphereToKill.kill()
+                if let index = spheres.firstIndex(where: { $0.anchor == sphereToKill.anchor }) {
+                    spheres.remove(at: index)
+                }
+            }
+        }
+        // TODO: when chord grows, spawn additional spheres to match new notes
+        
+        // Store the new chord
+        chord = spatialChord
     }
 }
 
@@ -89,11 +129,17 @@ struct ImmersiveView: View {
             ]
             
             for position in clusterPositions {
-                let cluster = Cluster(x: position.x, z: position.z, spatialChord: spatialChord)
+                var cluster = Cluster(x: position.x, z: position.z, spatialChord: spatialChord)
                 for sphere in cluster.spheres {
                     content.add(sphere.anchor)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                        // TODO: handle dynamic chord updates for varying note arrays
+                        cluster.updateChord(SpatialChord([0, 8, 7, 12, 26, 27]))
+                    }
                 }
             }
+            
+            
         }
     }
 }
