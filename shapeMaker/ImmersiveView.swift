@@ -39,13 +39,18 @@ struct sphereMaker {
 struct Cluster {
     let spheres: [sphereMaker]
     
-    init() {
+    init(position: SIMD3<Float>) {
         spheres = (0..<5).map { index in
             let yOffset = Float(index) * 0.1
             let offset: ClosedRange<Float> = -0.05...0.05
             let xOffset = Float.random(in: offset)
             let zOffset = Float.random(in: offset)
-            return sphereMaker(SIMD3(x: xOffset, y: 1.7 + yOffset, z: -1 + zOffset))
+            let spherePosition = SIMD3(
+                x: position.x + xOffset,
+                y: position.y + yOffset,
+                z: position.z + zOffset
+            )
+            return sphereMaker(spherePosition)
         }
     }
 }
@@ -55,12 +60,16 @@ struct ImmersiveView: View {
     
     var body: some View {
         RealityView { content in
-            let cluster = Cluster()
-            //            Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false) { _ in
-            //                sphere.move(SIMD3<Float>(x: 0, y: 2, z: -1.2))
-            //            }
-            for sphere in cluster.spheres {
-                content.add(sphere.anchor)
+            let positions = [
+                SIMD3<Float>(x: 0.0, y: 1.7, z: -1.0),
+                SIMD3<Float>(x: 0.3, y: 1.7, z: -1.0),
+                SIMD3<Float>(x: -0.5, y: 1.2, z: -1)
+            ]
+            for position in positions {
+                let cluster = Cluster(position: position)
+                for sphere in cluster.spheres {
+                    content.add(sphere.anchor)
+                }
             }
         }
     }
@@ -70,4 +79,3 @@ struct ImmersiveView: View {
     ImmersiveView()
         .environment(AppModel())
 }
-
