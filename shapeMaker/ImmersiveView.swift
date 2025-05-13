@@ -39,19 +39,37 @@ struct sphereMaker {
 struct Cluster {
     let spheres: [sphereMaker]
     
-    init(position: SIMD3<Float>) {
-        spheres = (0..<5).map { index in
-            let yOffset = Float(index) * 0.1
+    init(x: Float, z: Float, yNotes: [SpatialNote]) {
+        spheres = yNotes.map { yNote in
             let offset: ClosedRange<Float> = -0.05...0.05
             let xOffset = Float.random(in: offset)
             let zOffset = Float.random(in: offset)
             let spherePosition = SIMD3(
-                x: position.x + xOffset,
-                y: position.y + yOffset,
-                z: position.z + zOffset
+                x: x + xOffset,
+                y: yNote.yPosition,
+                z: z + zOffset
             )
             return sphereMaker(spherePosition)
         }
+    }
+}
+
+struct SpatialChord {
+    let notes: [SpatialNote]
+    
+    init (_ notes: [Int]) {
+        self.notes = notes.map { SpatialNote(Float($0)) }
+    }
+}
+
+struct SpatialNote {
+    let yPosition: Float
+    
+    init (_ relNoteNumber: Float) {
+        let normalised = relNoteNumber.normalise(0...27)
+        let low: Float = 1.15
+        let high: Float = 2.15
+        self.yPosition = low + normalised * (high - low)
     }
 }
 
@@ -60,18 +78,29 @@ struct ImmersiveView: View {
     
     var body: some View {
         RealityView { content in
-            let positions = [
-                SIMD3<Float>(x: 0.0, y: 1.7, z: -1.0),
-                SIMD3<Float>(x: 0.3, y: 1.7, z: -1.0),
-                SIMD3<Float>(x: -0.5, y: 1.2, z: -1)
+            let spatialChord = SpatialChord([
+                0, 8, 7, 12, 27
+            ])
+            
+            let clusterPositions = [
+                (x: 0.0 as Float, z: -1.0 as Float),
+                (x: 0.3 as Float, z: -1.0 as Float),
+                (x: -0.5 as Float, z: -1.0 as Float)
             ]
-            for position in positions {
-                let cluster = Cluster(position: position)
+            
+            for position in clusterPositions {
+                let cluster = Cluster(x: position.x, z: position.z, yNotes: spatialChord.notes)
                 for sphere in cluster.spheres {
                     content.add(sphere.anchor)
                 }
             }
         }
+    }
+}
+
+extension Float {
+    func normalise(_ range: ClosedRange<Float>) -> Float {
+        return max(0, min(1, (self - range.lowerBound) / (range.upperBound - range.lowerBound)))
     }
 }
 
