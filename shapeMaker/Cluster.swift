@@ -40,7 +40,7 @@ struct Cluster {
         
         // Create initial spheres
         for state in sphereStates {
-            let sphere = Orb(state.position)
+            let sphere = Orb(state.position, colour: .red)
             content.add(sphere.anchor)
             sphereEntities[state.id] = sphere
         }

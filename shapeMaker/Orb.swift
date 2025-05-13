@@ -12,27 +12,25 @@ import RealityKitContent
 struct Orb {
     public let anchor = AnchorEntity()
     
-    init(_ position: SIMD3<Float>, radius: Float = 16) {
+    init(_ position: SIMD3<Float>, radius: Float = 16, colour: SimpleMaterial.Color = .systemBlue) {
         let sphere = ModelEntity(
             mesh: .generateSphere(radius: radius / 1000),
             materials: [SimpleMaterial(
-                color: .systemBlue,
+                color: colour,
                 roughness: 0.2,
                 isMetallic: true
                 
             )]
         )
         
-        // Initialize the anchor at zero scale
         anchor.setScale(SIMD3<Float>(repeating: 0), relativeTo: nil)
         DispatchQueue.main.async { [anchor] in
-            // Animate scale from 0 to 1 over 0.4 seconds
             let targetTransform = Transform(
                 scale: SIMD3<Float>(repeating: 1),
                 rotation: anchor.transform.rotation,
                 translation: anchor.transform.translation
             )
-            anchor.move(to: targetTransform, relativeTo: nil, duration: 0.4)
+            anchor.move(to: targetTransform, relativeTo: nil, duration: 0.2)
         }
         anchor.position = position
         anchor.addChild(sphere)
