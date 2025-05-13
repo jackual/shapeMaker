@@ -22,6 +22,18 @@ struct Orb {
                 
             )]
         )
+        
+        // Initialize the anchor at zero scale
+        anchor.setScale(SIMD3<Float>(repeating: 0), relativeTo: nil)
+        DispatchQueue.main.async { [anchor] in
+            // Animate scale from 0 to 1 over 0.4 seconds
+            let targetTransform = Transform(
+                scale: SIMD3<Float>(repeating: 1),
+                rotation: anchor.transform.rotation,
+                translation: anchor.transform.translation
+            )
+            anchor.move(to: targetTransform, relativeTo: nil, duration: 0.4)
+        }
         anchor.position = position
         anchor.addChild(sphere)
     }

@@ -25,7 +25,7 @@ struct Cluster {
         
         // Initialize sphere states
         sphereStates = spatialChord.notes.map { note in
-            let offset: ClosedRange<Float> = -0.05...0.05
+            let offset: ClosedRange<Float> = -0.03...0.03
             let xOffset = Float.random(in: offset)
             let zOffset = Float.random(in: offset)
             return SphereState(

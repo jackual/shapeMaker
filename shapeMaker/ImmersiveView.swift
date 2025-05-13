@@ -22,7 +22,7 @@ struct ImmersiveView: View {
                 (x: 0.0 as Float, z: -1.0 as Float),
                 (x: 0.3 as Float, z: -1.0 as Float),
                 (x: -0.5 as Float, z: -1.0 as Float)
-            ]
+            ] 
             
             for position in clusterPositions {
                 var cluster = Cluster(
@@ -32,13 +32,13 @@ struct ImmersiveView: View {
                     content: content
                 )
                  
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                     cluster.updateChord(SpatialChord([1, 8, 10, 18, 5, 27, 22]))
                 }
             }
         }
     }
-}
+} 
 
 #Preview(immersionStyle: .progressive) {
     ImmersiveView()
