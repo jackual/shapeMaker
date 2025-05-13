@@ -19,7 +19,12 @@ struct Cluster {
     private var chord: SpatialChord
     private let content: RealityViewContent
     
-    init(x: Float, z: Float, spatialChord: SpatialChord, content: RealityViewContent) {
+    init(
+        x: Float, z: Float,
+        spatialChord: SpatialChord,
+        content: RealityViewContent,
+        name: String
+    ) {
         self.content = content
         self.chord = spatialChord
         
