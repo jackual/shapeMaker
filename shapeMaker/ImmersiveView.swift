@@ -9,12 +9,12 @@ import SwiftUI
 import RealityKit
 import RealityKitContent
 
-struct sphereMaker {
+struct Orb {
     public let anchor = AnchorEntity()
     
-    init(_ position: SIMD3<Float>) {
+    init(_ position: SIMD3<Float>, radius: Float = 16) {
         let sphere = ModelEntity(
-            mesh: .generateSphere(radius: 0.03),
+            mesh: .generateSphere(radius: radius / 1000),
             materials: [SimpleMaterial(
                 color: .systemBlue,
                 roughness: 0.2,
@@ -37,19 +37,19 @@ struct sphereMaker {
 }
 
 struct Cluster {
-    let spheres: [sphereMaker]
+    let spheres: [Orb]
     
-    init(x: Float, z: Float, yNotes: [SpatialNote]) {
-        spheres = yNotes.map { yNote in
+    init(x: Float, z: Float, spatialChord: SpatialChord) {
+        spheres = spatialChord.notes.map { note in
             let offset: ClosedRange<Float> = -0.05...0.05
             let xOffset = Float.random(in: offset)
             let zOffset = Float.random(in: offset)
             let spherePosition = SIMD3(
                 x: x + xOffset,
-                y: yNote.yPosition,
+                y: note.yPosition,
                 z: z + zOffset
             )
-            return sphereMaker(spherePosition)
+            return Orb(spherePosition)
         }
     }
 }
@@ -89,7 +89,7 @@ struct ImmersiveView: View {
             ]
             
             for position in clusterPositions {
-                let cluster = Cluster(x: position.x, z: position.z, yNotes: spatialChord.notes)
+                let cluster = Cluster(x: position.x, z: position.z, spatialChord: spatialChord)
                 for sphere in cluster.spheres {
                     content.add(sphere.anchor)
                 }
