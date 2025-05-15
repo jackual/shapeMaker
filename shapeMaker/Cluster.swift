@@ -14,6 +14,8 @@ struct Cluster {
         let id: UUID
     }
     
+    let name: String
+    private var isHovered = false
     private var sphereStates: [SphereState]
     private var sphereEntities: [UUID: Orb] = [:]
     private var chord: SpatialChord
@@ -25,6 +27,7 @@ struct Cluster {
         content: RealityViewContent,
         name: String
     ) {
+        self.name = name
         self.content = content
         self.chord = spatialChord
         
@@ -117,6 +120,27 @@ struct Cluster {
             let sphere = Orb(state.position)
             content.add(sphere.anchor)
             sphereEntities[state.id] = sphere
+        }
+    }
+    
+    mutating func checkHover() {
+        print("Cluster '\(name)' checking hover state...")
+        print("Number of spheres: \(sphereEntities.count)")
+        
+        let newHoverState = sphereEntities.values.contains { orb in
+            let isHovering = orb.checkHover()
+            print("Orb hover check returned: \(isHovering)")
+            return isHovering
+        }
+        
+        print("Cluster '\(name)' hover state: \(newHoverState) (was: \(isHovered))")
+        if newHoverState != isHovered {
+            isHovered = newHoverState
+            if isHovered {
+                print("Now hovering over cluster: \(name)")
+            } else {
+                print("No longer hovering over cluster: \(name)")
+            }
         }
     }
 }

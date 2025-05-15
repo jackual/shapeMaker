@@ -11,6 +11,7 @@ import RealityKitContent
 
 struct ImmersiveView: View {
     @Environment(AppModel.self) var appModel
+    @State private var clusters: [Cluster] = []
     
     var body: some View {
         RealityView { content in
@@ -42,10 +43,17 @@ struct ImmersiveView: View {
                 name: "cs"
             )
             
+            clusters.append(contentsOf: [cluster1, cluster2, cluster3])
+            
             DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                 cluster1.updateChord(SpatialChord([1, 8, 10, 18, 5]))
                 cluster2.updateChord(SpatialChord([0, 5, 13, 17, 25]))
                 cluster3.updateChord(SpatialChord([4, 6, 12, 20, 22]))
+            }
+        } update: { content in
+            // Update hover states for all clusters
+            for i in clusters.indices {
+                clusters[i].checkHover()
             }
         }
     }

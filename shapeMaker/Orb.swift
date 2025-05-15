@@ -19,9 +19,11 @@ struct Orb {
                 color: colour,
                 roughness: 0.2,
                 isMetallic: true
-                
             )]
         )
+        
+        // Add hover effect
+        sphere.components[HoverEffectComponent.self] = HoverEffectComponent()
         
         anchor.setScale(SIMD3<Float>(repeating: 0), relativeTo: nil)
         DispatchQueue.main.async { [anchor] in
@@ -43,6 +45,17 @@ struct Orb {
             translation: translation
         )
         anchor.move(to: targetTransform, relativeTo: nil, duration: 0.2)
+    }
+    
+    func checkHover() -> Bool {
+        print("Orb checking hover...")
+        guard let sphere = anchor.children.first as? ModelEntity else {
+            print("No sphere found")
+            return false 
+        }
+        let hasHoverComponent = sphere.components[HoverEffectComponent.self] != nil
+        print("Sphere has hover component: \(hasHoverComponent)")
+        return hasHoverComponent
     }
     
     /// Removes this orb from the scene
