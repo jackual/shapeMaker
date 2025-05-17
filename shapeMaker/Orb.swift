@@ -9,12 +9,15 @@ import SwiftUI
 import RealityKit
 import RealityKitContent
 
-struct Orb {
+@MainActor
+class Orb {
     public let anchor = AnchorEntity()
     
-    init(_ position: SIMD3<Float>, radius: Float = 16, colour: SimpleMaterial.Color = .systemBlue) {
+    init(_ position: SIMD3<Float>, radius: Float = 0.035, colour: SimpleMaterial.Color = .systemBlue) async {
+        print("Creating orb at position: \(position)")
+        
         let sphere = ModelEntity(
-            mesh: .generateSphere(radius: radius / 1000),
+            mesh: .generateSphere(radius: radius),
             materials: [SimpleMaterial(
                 color: colour,
                 roughness: 0.2,
@@ -51,7 +54,7 @@ struct Orb {
         print("Orb checking hover...")
         guard let sphere = anchor.children.first as? ModelEntity else {
             print("No sphere found")
-            return false 
+            return false
         }
         let hasHoverComponent = sphere.components[HoverEffectComponent.self] != nil
         print("Sphere has hover component: \(hasHoverComponent)")
