@@ -21,29 +21,17 @@
 		04BEFDE22DD29105006253F4 /* Exceptions for "shapeMaker" folder in "shapeMaker" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				ChordConverter.swift,
 				Info.plist,
 			);
 			target = 04BEFDC62DD29103006253F4 /* shapeMaker */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
-/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-		04DC646B2DD61101003953C2 /* Exceptions for "shapeMaker" folder in "Copy Bundle Resources" phase from "shapeMaker" target */ = {
-			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
-			buildPhase = 04BEFDC52DD29103006253F4 /* Resources */;
-			membershipExceptions = (
-				ChordConverter.swift,
-			);
-		};
-/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		04BEFDC92DD29103006253F4 /* shapeMaker */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				04BEFDE22DD29105006253F4 /* Exceptions for "shapeMaker" folder in "shapeMaker" target */,
-				04DC646B2DD61101003953C2 /* Exceptions for "shapeMaker" folder in "Copy Bundle Resources" phase from "shapeMaker" target */,
 			);
 			path = shapeMaker;
 			sourceTree = "<group>";

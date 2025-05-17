@@ -7,6 +7,8 @@
 import RealityKit
 import RealityKitContent
 import SwiftUI
+import HandSynthLibrary
+import Tonic
 
 struct Cluster {
     struct SphereState {

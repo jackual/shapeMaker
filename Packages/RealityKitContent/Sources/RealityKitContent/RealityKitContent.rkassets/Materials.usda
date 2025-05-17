@@ -1,0 +1,260 @@
+#usda 1.0
+(
+    defaultPrim = "Root"
+    metersPerUnit = 1
+    upAxis = "Y"
+)
+
+def Xform "Root"
+{
+    def Material "GridMaterial"
+    {
+        reorder nameChildren = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "DefaultSurfaceShader", "MaterialXPreviewSurface", "Texcoord", "Add", "Multiply", "Fractional", "LineCounts", "Multiply_1", "Separate2", "Separate2_1", "Ifgreater", "Ifgreater_1", "Max", "Background_Color"]
+        token outputs:mtlx:surface.connect = </Root/GridMaterial/MaterialXPreviewSurface.outputs:out>
+        token outputs:realitykit:vertex
+        token outputs:surface
+        float2 ui:nodegraph:realitykit:subgraphOutputs:pos = (2222, 300.5)
+        float2 ui:nodegraph:realitykit:subgraphOutputs:size = (182, 89)
+        int ui:nodegraph:realitykit:subgraphOutputs:stackingOrder = 749
+
+        def Shader "DefaultSurfaceShader"
+        {
+            uniform token info:id = "UsdPreviewSurface"
+            color3f inputs:diffuseColor = (1, 1, 1)
+            float inputs:roughness = 0.75
+            token outputs:surface
+        }
+
+        def Shader "MaterialXPreviewSurface"
+        {
+            uniform token info:id = "ND_UsdPreviewSurface_surfaceshader"
+            float inputs:clearcoat
+            float inputs:clearcoatRoughness
+            color3f inputs:diffuseColor = (0.46135616, 0.043910287, 0) (
+                colorSpace = "srgb_texture"
+            )
+            color3f inputs:emissiveColor
+            float inputs:ior
+            float inputs:metallic = 0.15
+            float3 inputs:normal
+            float inputs:occlusion
+            float inputs:opacity
+            float inputs:opacityThreshold
+            float inputs:roughness = 0.5
+            token outputs:out
+            float2 ui:nodegraph:node:pos = (1967, 300.5)
+            float2 ui:nodegraph:node:size = (208, 297)
+            int ui:nodegraph:node:stackingOrder = 1090
+            string[] ui:nodegraph:realitykit:node:attributesShowingChildren = ["Advanced"]
+        }
+    }
+
+    def Material "Material"
+    {
+        float inputs:deform = 0 (
+            customData = {
+                dictionary realitykit = {
+                    float2 positionInSubgraph = (-101.42308, -317.2587)
+                    int stackingOrderInSubgraph = 866
+                }
+            }
+        )
+        token outputs:mtlx:surface.connect = </Root/Material/UnlitSurface.outputs:out>
+        token outputs:realitykit:vertex.connect = </Root/Material/GeometryModifier.outputs:out>
+        float2 ui:nodegraph:realitykit:subgraphOutputs:pos = (1133.3665, -145.50954)
+        int ui:nodegraph:realitykit:subgraphOutputs:stackingOrder = 671
+
+        def Shader "UnlitSurface"
+        {
+            uniform token info:id = "ND_realitykit_unlit_surfaceshader"
+            bool inputs:applyPostProcessToneMap = 0
+            color3f inputs:color.connect = </Root/Material/Combine3.outputs:out>
+            bool inputs:hasPremultipliedAlpha = 0
+            float inputs:opacity = 1
+            float inputs:opacityThreshold = 0
+            token outputs:out
+            float2 ui:nodegraph:node:pos = (823.06177, -88.68142)
+            int ui:nodegraph:node:stackingOrder = 671
+        }
+
+        def Shader "Position"
+        {
+            uniform token info:id = "ND_position_vector3"
+            string inputs:space = "model"
+            float3 outputs:out
+            float2 ui:nodegraph:node:pos = (-497.19922, 90.62891)
+            int ui:nodegraph:node:stackingOrder = 611
+        }
+
+        def Shader "TransformVector"
+        {
+            uniform token info:id = "ND_transformvector_vector3"
+            string inputs:fromspace = "model"
+            float3 inputs:in.connect = </Root/Material/Position.outputs:out>
+            string inputs:tospace = "world"
+            float3 outputs:out
+            float2 ui:nodegraph:node:pos = (-283.0625, 114.86328)
+            int ui:nodegraph:node:stackingOrder = 352
+        }
+
+        def Shader "Separate3"
+        {
+            uniform token info:id = "ND_separate3_vector3"
+            float3 inputs:in.connect = </Root/Material/Remap.outputs:out>
+            float outputs:outx
+            float outputs:outy
+            float outputs:outz
+            float2 ui:nodegraph:node:pos = (-75.33203, -26.007812)
+            int ui:nodegraph:node:stackingOrder = 497
+        }
+
+        def Shader "Combine3"
+        {
+            uniform token info:id = "ND_combine3_color3"
+            float inputs:in1.connect = </Root/Material/SmoothStep.outputs:out>
+            float inputs:in2.connect = </Root/Material/SmoothStep_1.outputs:out>
+            float inputs:in3.connect = </Root/Material/SmoothStep_2.outputs:out>
+            color3f outputs:out
+            float2 ui:nodegraph:node:pos = (596.7141, -126.20486)
+            int ui:nodegraph:node:stackingOrder = 671
+        }
+
+        def Shader "Remap"
+        {
+            uniform token info:id = "ND_remap_vector3"
+            prepend float3 inputs:in.connect = </Root/Material/TransformVector.outputs:out>
+            float3 inputs:inhigh = (0.5, 0.5, 0.5)
+            float3 inputs:inlow = (-0.5, -0.5, -0.5)
+            float3 inputs:outhigh = (1, 1, 1)
+            float3 inputs:outlow = (0, 0, 0)
+            float3 outputs:out
+            float2 ui:nodegraph:node:pos = (-161.0628, 201.00873)
+            int ui:nodegraph:node:stackingOrder = 613
+        }
+
+        def Shader "Range"
+        {
+            uniform token info:id = "ND_range_float"
+            bool inputs:doclamp
+            float inputs:in.connect = </Root/Material/Separate3.outputs:outx>
+            float inputs:inhigh
+            float inputs:inlow
+            float inputs:outhigh
+            float outputs:out
+            float2 ui:nodegraph:node:pos = (205.4306, -126.02997)
+            int ui:nodegraph:node:stackingOrder = 733
+        }
+
+        def Shader "SmoothStep"
+        {
+            uniform token info:id = "ND_smoothstep_float"
+            float inputs:high
+            float inputs:in.connect = </Root/Material/Range.outputs:out>
+            float inputs:low = 0
+            float outputs:out
+            float2 ui:nodegraph:node:pos = (378.11005, -120.54037)
+            int ui:nodegraph:node:stackingOrder = 810
+        }
+
+        def Shader "Range_1"
+        {
+            uniform token info:id = "ND_range_float"
+            bool inputs:doclamp
+            float inputs:gamma
+            float inputs:in.connect = </Root/Material/Separate3.outputs:outy>
+            float inputs:inhigh
+            float inputs:inlow
+            float inputs:outhigh
+            float inputs:outlow
+            float outputs:out
+            float2 ui:nodegraph:node:pos = (192.09273, 110.07452)
+            int ui:nodegraph:node:stackingOrder = 780
+        }
+
+        def Shader "SmoothStep_1"
+        {
+            uniform token info:id = "ND_smoothstep_float"
+            float inputs:high
+            float inputs:in.connect = </Root/Material/Range_1.outputs:out>
+            float inputs:low = 0
+            float outputs:out
+            float2 ui:nodegraph:node:pos = (387.08914, 124.0803)
+            int ui:nodegraph:node:stackingOrder = 809
+        }
+
+        def Shader "Range_2"
+        {
+            uniform token info:id = "ND_range_float"
+            bool inputs:doclamp
+            float inputs:gamma
+            float inputs:in.connect = </Root/Material/Separate3.outputs:outz>
+            float inputs:inhigh
+            float inputs:inlow
+            float inputs:outhigh
+            float inputs:outlow
+            float outputs:out
+            float2 ui:nodegraph:node:pos = (213.82417, 355.04987)
+            int ui:nodegraph:node:stackingOrder = 759
+        }
+
+        def Shader "SmoothStep_2"
+        {
+            uniform token info:id = "ND_smoothstep_float"
+            float inputs:high
+            float inputs:in.connect = </Root/Material/Range_2.outputs:out>
+            float inputs:low = 0
+            float outputs:out
+            float2 ui:nodegraph:node:pos = (386.5036, 360.53946)
+            int ui:nodegraph:node:stackingOrder = 806
+        }
+
+        def Shader "GeometryModifier"
+        {
+            uniform token info:id = "ND_realitykit_geometrymodifier_2_0_vertexshader"
+            float3 inputs:bitangent.connect = None
+            color4f inputs:color = (0, 0, 0, 0) (
+                colorSpace = "srgb_texture"
+            )
+            color4f inputs:color.connect = None
+            float3 inputs:modelPositionOffset.connect = </Root/Material/Noise3D.outputs:out>
+            float3 inputs:normal = (0, 0, 0)
+            float3 inputs:normal.connect = None
+            float2 inputs:uv0
+            float2 inputs:uv1.connect = None
+            float4 inputs:uv2
+            float4 inputs:uv3
+            float4 inputs:uv4 = (0, -0.13, 0, 0)
+            float4 inputs:uv7
+            token outputs:out
+            float2 ui:nodegraph:node:pos = (841.6873, -364.1703)
+            int ui:nodegraph:node:stackingOrder = 860
+        }
+
+        def Shader "Noise3D"
+        {
+            uniform token info:id = "ND_noise3d_vector3FA"
+            float inputs:amplitude = 0
+            float inputs:amplitude.connect = </Root/Material.inputs:deform>
+            float inputs:pivot = 0
+            float3 inputs:position
+            float3 outputs:out
+            float2 ui:nodegraph:node:pos = (141.10635, -375.52298)
+            int ui:nodegraph:node:stackingOrder = 862
+            string[] ui:nodegraph:realitykit:node:attributesShowingChildren = ["inputs:pivot"]
+        }
+    }
+
+    def Sphere "Sphere" (
+        active = true
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Root/Material> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        double radius = 0.35000000000000003
+        float3 xformOp:translate = (0, 0.374245, 0.19053279)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+}
+

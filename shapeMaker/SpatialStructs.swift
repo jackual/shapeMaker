@@ -22,8 +22,6 @@ struct SpatialNote {
     }
 }
 
-
-
 extension Float {
     func normalise(_ range: ClosedRange<Float>) -> Float {
         return max(0, min(1, (self - range.lowerBound) / (range.upperBound - range.lowerBound)))
