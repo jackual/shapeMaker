@@ -11,7 +11,6 @@ import HandSynthLibrary
 import Tonic
 
 @MainActor
-@MainActor
 struct Cluster {
     struct SphereState {
         let position: SIMD3<Float>
@@ -30,7 +29,6 @@ struct Cluster {
         spatialChord: SpatialChord,
         content: RealityViewContent,
         name: String
-    ) async {
     ) async {
         self.name = name
         self.content = content
@@ -54,14 +52,12 @@ struct Cluster {
         // Create initial spheres
         for state in sphereStates {
             let sphere = await Orb(state.position, colour: .red)
-            let sphere = await Orb(state.position, colour: .red)
             content.add(sphere.anchor)
 //            await sphere.animateIn()
             sphereEntities[state.id] = sphere
         }
     }
     
-    mutating func updateChord(_ spatialChord: SpatialChord) async {
     mutating func updateChord(_ spatialChord: SpatialChord) async {
         let sortedStates = sphereStates.sorted { $0.position.y < $1.position.y }
         let sortedTargetY = spatialChord.notes.map(\.yPosition).sorted()
@@ -125,7 +121,6 @@ struct Cluster {
         }
         
         for state in toAdd {
-            let sphere = await Orb(state.position)
             let sphere = await Orb(state.position)
             content.add(sphere.anchor)
 //            await sphere.animateIn()
