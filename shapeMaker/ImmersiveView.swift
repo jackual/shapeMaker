@@ -14,27 +14,19 @@ import HandSynthLibrary
 extension Pattern {
     func toSpatialChords() -> [SpatialChord] {
         var spatialChords: [SpatialChord] = []
-        // Iterate over each chord in the pattern
         for chordNotes in patternNotes {
             var spatialIndices: [Int] = []
-            // Process each note in the chord
             for chordNote in chordNotes {
-                // Each chord note has a NoteClass (letter + accidental, no octave) [oai_citation:1‡audiokit.io](https://www.audiokit.io/Tonic/documentation/tonic/noteclass#:~:text=Structure,Topics) and an octave
-                // Find the scale degree index of this NoteClass in the key’s diatonic noteSet
                 guard let degreeIndex = key.noteSet.array.firstIndex(where: { $0.noteClass == chordNote.note.noteClass }) else {
-                    fatalError("Note \(chordNote.note) is not in the key’s scale")
+                    fatalError("Note \(chordNote.note) is not in the key's scale")
                 }
-                // Clamp the note’s octave to the allowed octave range (octBound)
-                let lo = octBound.lowerBound, hi = octBound.upperBound
-                let octave = min(max(chordNote.octave, lo), hi)
+                // Clamp octave to 4 octaves from base octave
+                let octave = min(max(chordNote.octave, baseOctave), baseOctave + 3)
                 // Map the scale degree and octave to a spatial index (7 notes per octave)
-                let spatialIndex = (octave - lo) * 7 + degreeIndex
+                let spatialIndex = (octave - baseOctave) * 7 + degreeIndex
                 spatialIndices.append(spatialIndex)
             }
-            // (Optional) Sort the spatial notes by index for now.
-            // TODO: Preserve the original chord note order if required in the future.
             spatialIndices.sort()
-            // Create a SpatialChord from the mapped spatial indices
             spatialChords.append(SpatialChord(spatialIndices))
         }
         return spatialChords

@@ -12,7 +12,7 @@ let samplePatch = Patch(
     pattern: Pattern(
         name: "Spatial Chord Progression",
         key: .C,                  // Explicitly set key for spatial mapping
-        octBound: 3...6,         // Keep notes within VR comfortable height range
+        baseOctave: 3,            // Changed from octBound: 3...6
         patternNotes: [
             // C major (root position)
             [ChordNote(note: .C, octave: 3),
