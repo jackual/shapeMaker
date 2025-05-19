@@ -13,41 +13,46 @@ import RealityKitContent
 class Orb {
     public let anchor = AnchorEntity()
     
-    init(_ position: SIMD3<Float>, radius: Float = 0.035, colour: SimpleMaterial.Color = .systemBlue) async {
+    init(_ position: SIMD3<Float>, radius: Float = 0.016, colour: SimpleMaterial.Color = .systemBlue) async {
         print("Creating orb at position: \(position)")
-        
-        let sphere = ModelEntity(
-            mesh: .generateSphere(radius: radius),
-            materials: [SimpleMaterial(
-                color: colour,
-                roughness: 0.2,
-                isMetallic: true
-            )]
-        )
-        
-        // Add hover effect
-        sphere.components[HoverEffectComponent.self] = HoverEffectComponent()
-        
-        anchor.setScale(SIMD3<Float>(repeating: 0), relativeTo: nil)
-        DispatchQueue.main.async { [anchor] in
-            let targetTransform = Transform(
-                scale: SIMD3<Float>(repeating: 1),
-                rotation: anchor.transform.rotation,
-                translation: anchor.transform.translation
+        do {
+            var material = try await ShaderGraphMaterial(named: "/Root/Clouds", from: "Materials", in: realityKitContentBundle)
+            let sphere = ModelEntity(
+                mesh: .generateSphere(radius: radius),
+                materials: [material]
             )
-            anchor.move(to: targetTransform, relativeTo: nil, duration: 0.2)
+            
+            // Set initial scale to zero before adding to scene
+            anchor.scale = .one
+            anchor.position = position
+            anchor.addChild(sphere)
+            
         }
-        anchor.position = position
-        anchor.addChild(sphere)
+  catch {
+            print("error")
+        }
     }
     
-    func move(_ translation: SIMD3<Float>) {
+    func customMove(_ translation: SIMD3<Float>, scale: Float = 1) {
+        print(translation)
         let targetTransform = Transform(
-            scale: SIMD3<Float>(x: 1, y: 1, z: 1),
+            scale: SIMD3<Float>(x: scale, y: scale, z: scale),
             rotation: simd_quaternion(0, 0, 0, 1),
             translation: translation
         )
         anchor.move(to: targetTransform, relativeTo: nil, duration: 0.2)
+    }
+    func animateIn(duration: TimeInterval = 2) {
+        print("animate in")
+        
+        // No need to set initial scale since it's already zero
+        let target = Transform(
+            scale: .one,
+            rotation: anchor.transform.rotation,
+            translation: anchor.transform.translation)
+        
+        // Animate to full scale
+        anchor.move(to: target, relativeTo: nil, duration: duration)
     }
     
     func checkHover() -> Bool {
@@ -66,3 +71,4 @@ class Orb {
         anchor.removeFromParent()
     }
 }
+

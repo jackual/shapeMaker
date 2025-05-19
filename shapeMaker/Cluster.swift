@@ -22,12 +22,12 @@ struct Cluster {
     private var sphereStates: [SphereState]
     private var sphereEntities: [UUID: Orb] = [:]
     private var chord: SpatialChord
-    private let content: RealityViewContent
+    private let content: any RealityViewContentProtocol
     
     init(
         x: Float, z: Float,
         spatialChord: SpatialChord,
-        content: RealityViewContent,
+        content: any RealityViewContentProtocol,
         name: String
     ) async {
         self.name = name
@@ -53,12 +53,14 @@ struct Cluster {
         for state in sphereStates {
             let sphere = await Orb(state.position, colour: .red)
             content.add(sphere.anchor)
-//            await sphere.animateIn()
+            //            await sphere.animateIn()
             sphereEntities[state.id] = sphere
+            //            sphere.animateIn()
         }
     }
     
     mutating func updateChord(_ spatialChord: SpatialChord) async {
+        print("updating")
         let sortedStates = sphereStates.sorted { $0.position.y < $1.position.y }
         let sortedTargetY = spatialChord.notes.map(\.yPosition).sorted()
         
@@ -117,13 +119,13 @@ struct Cluster {
         }
         
         for (id, newPos) in toMove {
-            sphereEntities[id]?.move(newPos)
+            sphereEntities[id]?.customMove(newPos)
         }
         
         for state in toAdd {
             let sphere = await Orb(state.position)
             content.add(sphere.anchor)
-//            await sphere.animateIn()
+            //            await sphere.animateIn()
             sphereEntities[state.id] = sphere
         }
     }

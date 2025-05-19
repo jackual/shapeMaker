@@ -40,6 +40,7 @@ struct ImmersiveView: View {
     var body: some View {
         RealityView { content in
             let spatialChord1 = samplePatch.pattern.toSpatialChords()[7]
+            let spatialChord2 = samplePatch.pattern.toSpatialChords()[2]
             var cluster1 = await Cluster(
                 x: 0.0,
                 z: -0.4,
@@ -48,15 +49,15 @@ struct ImmersiveView: View {
                 name: "a"
             )
             clusters.append(contentsOf: [cluster1])
+            await cluster1.updateChord(spatialChord2)
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            }
-        } update: { content in
-            // Update hover states for all clusters
-            for i in clusters.indices {
-                clusters[i].checkHover()
-            }
         }
+        //        } update: { content in
+        //            // Update hover states for all clusters
+        //            for i in clusters.indices {
+        //                clusters[i].checkHover()
+        //            }
+        //        }
     }
 }
 //
