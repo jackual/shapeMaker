@@ -1,4 +1,3 @@
-//
 //  ContentView.swift
 //  shapeMaker
 //
@@ -9,10 +8,14 @@ import SwiftUI
 import RealityKit
 
 struct ContentView: View {
-
+    let handTracker = HandTracker()
+    
     var body: some View {
         VStack {
             ToggleImmersiveSpaceButton()
+        }
+        .task {
+            await handTracker.startTracking()
         }
     }
 }

@@ -113,6 +113,16 @@
       [
         "E8CDD387-C876-49A4-A50A-027D3FC41E0D",
         "Root",
+        "SkyDome"
+      ],
+      {
+        "disallowsFraming" : true,
+        "isExpanded" : false,
+        "isLocked" : false
+      },
+      [
+        "E8CDD387-C876-49A4-A50A-027D3FC41E0D",
+        "Root",
         "Material"
       ],
       {
