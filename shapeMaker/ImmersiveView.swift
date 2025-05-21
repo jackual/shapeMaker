@@ -44,12 +44,12 @@ struct ImmersiveView: View {
             var cluster1 = await Cluster(
                 x: 0.0,
                 z: -0.4,
-                spatialChord: spatialChord1,
+                patch: samplePatch,
                 content: content,
                 name: "a"
             )
             clusters.append(contentsOf: [cluster1])
-            await cluster1.updateChord(spatialChord2)
+            //await cluster1.updateChord(spatialChord2)
             
         }
         //        } update: { content in

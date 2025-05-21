@@ -10,7 +10,6 @@ class HandTracker {
     
     func startTracking() async {
         do {
-            try await arSession.run([handTracking])
             
             // Start collecting hand tracking updates
             for await update in handTracking.anchorUpdates {

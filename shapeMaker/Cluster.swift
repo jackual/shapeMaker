@@ -21,21 +21,27 @@ struct Cluster {
     private var isHovered = false
     private var sphereStates: [SphereState]
     private var sphereEntities: [UUID: Orb] = [:]
-    private var chord: SpatialChord
+    private var patch: Patch
     private let content: any RealityViewContentProtocol
     
     init(
         x: Float, z: Float,
-        spatialChord: SpatialChord,
+        patch: Patch,
         content: any RealityViewContentProtocol,
         name: String
     ) async {
         self.name = name
         self.content = content
-        self.chord = spatialChord
+        self.patch = patch
+        
+        let spatialChords = patch.pattern.toSpatialChords()
+        guard let firstChord = spatialChords.first else {
+            sphereStates = []
+            return
+        }
         
         // Initialize sphere states
-        sphereStates = spatialChord.notes.map { note in
+        sphereStates = firstChord.notes.map { note in
             let offset: ClosedRange<Float> = -0.03...0.03
             let xOffset = Float.random(in: offset)
             let zOffset = Float.random(in: offset)
@@ -53,14 +59,17 @@ struct Cluster {
         for state in sphereStates {
             let sphere = await Orb(state.position, colour: .red)
             content.add(sphere.anchor)
-            //            await sphere.animateIn()
             sphereEntities[state.id] = sphere
-            //            sphere.animateIn()
         }
     }
     
-    mutating func updateChord(_ spatialChord: SpatialChord) async {
+    mutating func updateChord(_ newPatch: Patch) async {
         print("updating")
+        self.patch = newPatch
+        
+        let spatialChords = newPatch.pattern.toSpatialChords()
+        guard let spatialChord = spatialChords.first else { return }
+        
         let sortedStates = sphereStates.sorted { $0.position.y < $1.position.y }
         let sortedTargetY = spatialChord.notes.map(\.yPosition).sorted()
         
@@ -108,7 +117,6 @@ struct Cluster {
                 }
                 return state
             }
-        chord = spatialChord
         
         // Apply changes to entities
         for id in toRemove {
@@ -125,7 +133,6 @@ struct Cluster {
         for state in toAdd {
             let sphere = await Orb(state.position)
             content.add(sphere.anchor)
-            //            await sphere.animateIn()
             sphereEntities[state.id] = sphere
         }
     }
